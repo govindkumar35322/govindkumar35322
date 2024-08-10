@@ -1,0 +1,135 @@
+package Pay.fund.bank;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+	private static final long serialersionUID = 1l;
+	private String AccountType;
+	private String userName, email, ifscCode, bankName, accountNumber, history, mobileNumber, accoutnType;
+	private int accountPin;
+	private double accountBalance;
+
+	public User(String userName, String email, String ifscCode, String bankName, String accountNumber, String history,
+			String AccountType, int accountPin, double accountBalance) {
+		super();
+		this.userName = userName;
+		this.email = email;
+		this.ifscCode = ifscCode;
+		this.bankName = bankName;
+		this.accountNumber = accountNumber;
+		this.history = history;
+		this.accountPin = accountPin;
+		this.accountBalance = accountBalance;
+		this.setAccountType(AccountType);
+	}
+
+	@Override
+	public String toString() {
+		return "User [AccountType=" + AccountType + ", userName=" + userName + ", email=" + email + ", ifscCode="
+				+ ifscCode + ", bankName=" + bankName + ", accountNumber=" + accountNumber + ", history=" + history
+				+ ", mobileNumber=" + mobileNumber + ", accoutnType=" + accoutnType + ", accountPin=" + accountPin
+				+ ", accountBalance=" + accountBalance + "]";
+	}
+
+	public User() {
+
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getIfscCode() {
+		return ifscCode;
+	}
+
+	public void setIfscCode(String ifscCode) {
+		this.ifscCode = ifscCode;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getHistory() {
+		return history;
+	}
+
+	public void setHistory(String history) {
+		this.history = history;
+	}
+
+	public int getAccountPin() {
+		return accountPin;
+	}
+
+	public void setAccountPin(int accountPin) {
+		this.accountPin = accountPin;
+	}
+
+	public double getAccountBalance() {
+		return this.accountBalance;
+	}
+
+	public void setAccountBalance(double accountBalance) {
+		this.accountBalance = accountBalance;
+	}
+
+	public void setmobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public String getmobileNumber() {
+		return mobileNumber;
+	}
+
+	public static long getSerialersionuid() {
+		return serialersionUID;
+	}
+
+	public String getAccountType() {
+		return AccountType;
+	}
+
+	public void setAccountType(String accountType) {
+		AccountType = accountType;
+	}
+
+	public String getAccoutnType() {
+		return accoutnType;
+	}
+
+	public void setAccoutnType(String accoutnType) {
+		this.accoutnType = accoutnType;
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
