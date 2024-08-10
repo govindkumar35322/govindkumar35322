@@ -1,0 +1,403 @@
+package Pay.fund.validation;
+
+import java.util.Scanner;
+
+import Pay.fund.bank.User;
+
+public class AccountFundTransfer implements UserServices {
+	// private static final String = null;
+	User user1, user2;
+	int user, activeAcc;
+	Scanner sc = new Scanner(System.in);
+	private String accType;
+	{
+		user1 = new User();
+		user2 = new User();
+		// Scanner sc=new Scanner(System.in);
+	}
+
+	public static void main(String[] args) {
+		AccountFundTransfer aft = new AccountFundTransfer();
+		aft.mainMenu();
+	}
+
+	private void mainMenu() {
+
+		System.out.println("");
+		if (activeAcc != 0) {
+
+			System.out.println("1.logout");
+			System.out.println("2.AccountActivity");
+			System.out.println("3.AccountInfo");
+			System.out.println("4.Fundtransfer");
+			System.out.println("5.Withdraw");
+			System.out.println("6.ChangePin");
+
+		} else {
+			System.out.println("1.login");
+			System.out.println("2.CreateAccount");
+
+		}
+		System.out.println(".. ..");
+		int menuChoice = sc.nextInt();
+		if (menuChoice == 1) {
+			if (activeAcc == 1) {
+				Logout(user1);
+			} else if (activeAcc == 2) {
+				Logout(user2);
+			}
+
+			else {
+				this.Login();
+			}
+		} else if (menuChoice == 2) {
+			if (activeAcc != 0) {
+				if (activeAcc == 1) {
+					accountInfo(user1);
+				}
+
+				else if (activeAcc == 2) {
+					accountInfo(user2);
+				}
+			}
+
+			else {
+				this.CreateAccount();
+			}
+
+		}
+
+		else if (menuChoice == 3) {
+			if (activeAcc == 1) {
+				print(user1.getHistory());
+			} else {
+				print(user2.getHistory());
+			}
+			mainMenu();
+		} else if (menuChoice == 4) {
+			if (activeAcc == 1) {
+				this.checkAccount(user1, user2);
+				// FundTransfer(1000, 123456, user1, user2);
+			} else {
+				this.checkAccount(user2, user1);
+			}
+
+		}
+
+		else if (menuChoice == 5) {
+			if (activeAcc == 1) {
+				this.widthdraw(user1);
+			} else {
+				this.widthdraw(user2);
+			}
+
+		}
+
+		else if (menuChoice == 6) {
+			if (activeAcc == 1) {
+				this.changePin(user1);
+			} else {
+				this.changePin(user2);
+			}
+
+		}
+
+	}
+
+	private void widthdraw(User user12) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void Login() {
+		System.out.println("Welcome to bank");
+		System.out.println("enter your bank Account Number");
+		String acNumber = sc.next();
+		if (acNumber.equalsIgnoreCase(user1.getAccountNumber())) {
+			System.out.println("enter 6 digit pin");
+			int pin = sc.nextInt();
+			if (ValidateUser.verifypin(pin, user1)) {
+				activeAcc = 1;
+				System.out.println("login sucessfully");
+				createLog(user1, "Account Login");
+				mainMenu();
+			} else {
+				System.out.println("wrong pin enter please enter correct pin");
+				Login();
+			}
+		} else if (acNumber.equalsIgnoreCase(user2.getAccountNumber())) {
+			System.out.println("enter 6 digit pin");
+			int pin1 = sc.nextInt();
+			if (ValidateUser.verifypin(pin1, user2)) {
+				activeAcc = 2;
+				System.out.println("login sucessfully");
+				createLog(user2, "Account Login");
+				mainMenu();
+			} else {
+				System.out.println("wrong pin enter please enter correct pin");
+				Login();
+			}
+		} else {
+			System.out.println("your account does not exist");
+			mainMenu();
+		}
+
+	}
+
+	@Override
+	public void Logout(User user) {
+		activeAcc = 0;
+		System.out.println("logout sucessfully");
+		createLog(user, "Account Logout");
+		mainMenu();
+	}
+
+	@Override
+	public void AccountDetail() {
+
+	}
+
+	@Override
+	public void AccountActivity() {
+
+	}
+
+	public void checkAccount(User fromUser, User toUser) {
+		System.out.println("enter Receiver Account no you want to send money");
+		String accountNo = sc.next();
+		if (accountNo.equalsIgnoreCase(fromUser.getAccountNumber())) {
+			System.out.println("you can not send money to own account");
+			mainMenu();
+		} else if (accountNo.equalsIgnoreCase(toUser.getAccountNumber())) {
+			print("you are sending money to " + toUser.getUserName());
+			print("enter amount");
+			int amount = sc.nextInt();
+			print("enter 6 digit pin");
+			int pin = sc.nextInt();
+			if (!ValidateUser.verifypin(pin, fromUser)) {
+				print("incorrect Pin");
+				mainMenu();
+			}
+			if (activeAcc == 1) {
+				FundTransfer(amount, pin, fromUser, toUser);
+			} else {
+				FundTransfer(amount, pin, toUser, fromUser);
+			}
+		}
+
+		else {
+			System.out.println("this account number is not exists");
+			mainMenu();
+		}
+	}
+
+	@Override
+	public void Withdraw(User user) {
+		System.out.println("enter amount");
+		int amount = sc.nextInt();
+		System.out.println("enter your  6 digit pin");
+		int pin = sc.nextInt();
+		if (ValidateUser.verifypin(pin, user)) {
+			if (amount <= user.getAccountBalance()) {
+
+				user.setAccountBalance(user.getAccountBalance() - amount);
+				System.out.println("**------**Widthraw successfully***------**");
+				System.out.println(" available balance=" + user.getAccountBalance());
+				createLog(user, amount + "widthdraw");
+				mainMenu();
+			} else {
+				System.out.println("balance is not available");
+				System.out.println("----------------------------");
+				mainMenu();
+			}
+		} else {
+			System.out.println("wrong pin try again");
+			mainMenu();
+		}
+
+	}
+
+	@Override
+	public void CreateAccount() {
+		if (user1.getUserName() == null) {
+			user = 1;
+		} else if (user2.getUserName() == null) {
+			user = 2;
+		} else {
+			System.out.println("!! only two user we can create");
+		}
+
+		System.out.println("----Fill Detail to Continue-----");
+
+		System.out.println("===| Enter Bank Name  |===");
+		String bankName = sc.next();
+		if (!ValidateUser.checklength(3, bankName, false)) {
+			print("[!! bank name is not valid or empty !!]");
+			CreateAccount();
+		}
+		System.out.println("===| Full Name  |===");
+		String Name = sc.next();
+		if (!ValidateUser.checklength(3, Name, false)) {
+			print("[!!  name is not valid or empty !!]");
+			CreateAccount();
+		}
+		System.out.println("===|email  |===");
+		String email = sc.next();
+		if (!ValidateUser.checklength(10, email, false && !ValidateUser.validateEmail(email))) {
+			print("[!! email is not valid or empty !!]");
+			CreateAccount();
+		}
+		System.out.println("===| mobile Number  |===");
+		String mobileNumber = sc.next();
+		if (ValidateUser.ValidateMaxMobile(mobileNumber) || ValidateUser.ValidateMinMobile(mobileNumber)) {
+			print("[!! mobile number must be 10 digit !!]");
+			CreateAccount();
+		}
+		System.out.println("===| Create ifsc code  |===");
+		String ifscCode = sc.next();
+		if (!ValidateUser.checklength(11, ifscCode, true)) {
+			print("[!! ifscCode is not valid or empty !!]");
+			CreateAccount();
+		}
+		System.out.println("===| select account type  |===");
+		System.out.println("1.saving");
+		System.out.println("2.current");
+		int accountType = sc.nextInt();
+
+		if (accountType != 0 && accountType <= 2) {
+			if (accountType == 1) {
+				accType = "saving";
+			} else {
+				accType = "Current";
+			}
+		} else {
+			print("[!! accounttype is not valid  !!]");
+		}
+
+		System.out.println("===| Enetr amount you want to save  |===");
+		double AccountBalance = sc.nextDouble();
+		if (AccountBalance != 0) {
+			System.out.println("you can open account with some cash deposited");
+		} else {
+			System.out.println("===|sorry you can not open account with 0 |===");
+		}
+
+		System.out.println("===| Create  6 digit pin |===");
+		int AccountPin = sc.nextInt();
+		if (ValidateUser.checklength(6, String.valueOf(AccountPin), false)) {
+			System.out.println("===| pin must be 6 digit  |===");
+			CreateAccount();
+		}
+		System.out.println("===| generating 11 digit account number  |===");
+		String accNum = Utility.generateAccNum();
+		if (user == 1) {
+			user1.setAccountNumber(accNum);
+			user1.setAccountBalance(AccountBalance);
+			user1.setAccountPin(AccountPin);
+			user1.setUserName(Name);
+			user1.setBankName(bankName);
+			user1.setmobileNumber(mobileNumber);
+			user1.setEmail(email);
+			user1.setIfscCode(ifscCode);
+			user1.setHistory(Utility.gettimestamp());
+			user1.setAccountType(accType);
+			this.createLog(user1, "Account Created");
+			this.accountInfo(user1);
+			System.out.println(user1);
+		} else {
+			user2.setAccountNumber(accNum);
+			user2.setAccountBalance(AccountBalance);
+			user2.setAccountPin(AccountPin);
+			user2.setUserName(Name);
+			user2.setBankName(bankName);
+			user2.setmobileNumber(mobileNumber);
+			user2.setEmail(email);
+			user2.setIfscCode(ifscCode);
+			user2.setHistory(Utility.gettimestamp());
+			user2.setAccountType(accType);
+			this.createLog(user2, "Account Created");
+			this.accountInfo(user2);
+			System.out.println(user2);
+		}
+	}
+
+	private void accountInfo(User user12) {
+		// TODO Auto-generated method stub
+		System.out.println("===----***********-------===");
+		System.out.println("!! account detail !!");
+		System.out.println("===| Account created sucessfully |===");
+		System.out.println("==Bank Name =>" + user12.getBankName());
+		System.out.println("==Account Number =>" + user12.getAccountNumber());
+		System.out.println("==User Name =>" + user12.getUserName());
+		System.out.println("==Email =>" + user12.getEmail());
+		System.out.println("==Mobile Number =>" + user12.getmobileNumber());
+		System.out.println("==IFSC Code=>" + user12.getIfscCode());
+		System.out.println("==Account Balance =>" + user12.getAccountBalance());
+		System.out.println("==Account pin number =>" + user12.getAccountPin());
+		System.out.println("Account type=>" + user12.getAccountType());
+		this.mainMenu();
+	}
+
+	private void print(String string) {
+		System.out.println(string);
+	}
+
+	@Override
+	public void FundTransfer(int amount, int pin, User fromUser, User toUser) {
+		if (!ValidateUser.verifypin(pin, fromUser)) {
+			if (amount >= fromUser.getAccountBalance()) {
+				toUser.setAccountBalance(toUser.getAccountBalance() + amount);
+				fromUser.setAccountBalance(fromUser.getAccountBalance() - amount);
+				print("------Fund transfer successfully---------");
+				System.out.println("!~ Available balance =" + fromUser.getAccountBalance());
+				createLog(fromUser, amount + "transfer to" + toUser.getUserName());
+				createLog(toUser, amount + "Received from" + fromUser.getUserName());
+				mainMenu();
+			} else {
+				System.out.println("your account have not sufficeant balance");
+				System.out.println("-----------------------------------------");
+				mainMenu();
+			}
+
+		} else {
+			System.out.println("wrong pin enter try again");
+
+		}
+	}
+
+	@Override
+	public void changePin(User user) {
+		print("enter your old pin");
+		int oldpin = sc.nextInt();
+		if (oldpin == user.getAccountPin()) {
+			print("enter your new pin");
+			int newpin = sc.nextInt();
+			user.setAccountPin(newpin);
+			print("*****your pin has been changed********");
+			mainMenu();
+		} else {
+			System.out.println("you have entered wrong pin");
+			mainMenu();
+		}
+
+	}
+
+	private int getaccountPin() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void createLog(User user, String message) {
+		String history;
+		if (user.getHistory() == null) {
+			history = "";
+
+		} else {
+			history = user.getHistory();
+		}
+		user.setHistory(message + " on" + Utility.gettimestamp() + "\n" + history);
+	}
+
+}
